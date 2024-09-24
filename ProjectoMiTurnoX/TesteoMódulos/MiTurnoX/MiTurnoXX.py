@@ -40,6 +40,20 @@ class MiTurnoX(ctk.CTk):
                 self.boton_editar.configure(command = lambda: self.editar("atenciones"))
                 self.boton_borrar.configure(command = lambda: self.borrar("atenciones"))
                 self.frame_config_atenciones.pack(fill = "both", expand = 1,pady = 5, padx = 5)
+            case "reglas":
+                self.monitor_ventana_abierta = "reglas"
+                self.importar_lista_reglas()
+                self.etiqueta_espaciadora_2.configure(text = "Reglas de Atención", font= ("CtkFont", 20))
+                self.boton_editar.forget()
+                self.boton_nuevo.forget()
+                self.boton_borrar.forget()
+                self.boton_nuevo.pack(side= "left", pady = 2, padx = 2)
+                self.boton_editar.pack(side= "left", pady = 2, padx = 2)
+                self.boton_borrar.pack(side= "left", pady = 2, padx = 2)
+                self.boton_nuevo.configure(command = lambda: self.nuevo("reglas"))
+                self.boton_editar.configure(command = lambda: self.editar("reglas"))
+                self.boton_borrar.configure(command = lambda: self.borrar("reglas"))
+                self.frame_config_reglas.pack(fill = "both", expand = 1,pady = 5, padx = 5)
             case "pantalla":
                 self.monitor_ventana_abierta = "pantalla"
                 self.etiqueta_espaciadora_2.configure(text = "Pantalla", font= ("CtkFont", 20))
@@ -59,6 +73,7 @@ class MiTurnoX(ctk.CTk):
                 self.boton_nuevo.configure(command = lambda: self.nuevo("usuarios"))
                 self.boton_editar.configure(command = lambda: self.editar("usuarios"))
                 self.boton_borrar.configure(command = lambda: self.borrar("usuarios"))
+                self.frame_config_usuarios.pack(fill = "both", expand = 1, pady = 5, padx = 5)
             case "servidor":
                 self.monitor_ventana_abierta = "servidor"
                 self.etiqueta_espaciadora_2.configure(text = "Servidor", font= ("CtkFont", 20))
@@ -84,11 +99,15 @@ class MiTurnoX(ctk.CTk):
             case "atenciones":
                 self.frame_config_atenciones.destroy()
                 self.menu_config_atenciones()
+            case "reglas":
+                self.frame_config_reglas.destroy()
+                self.menu_config_reglas()
             case "pantalla":
                 self.frame_config_pantalla.destroy()
                 self.menu_config_pantalla()
             case "usuarios":
-                pass
+                self.frame_config_usuarios.destroy()
+                self.menu_config_usuarios()
             case "servidor":
                 pass
             case "impresora":
@@ -341,6 +360,8 @@ class MiTurnoX(ctk.CTk):
         self.label_logo_serdecom.pack(anchor = "n", pady = 2, padx = 2)
         self.config_atenciones = ctk.CTkButton(self.frame_menu_principal, width=180, height=30, text= "Atenciones", command= lambda: self.botones_menu_principal("atenciones"))
         self.config_atenciones.pack(anchor = "n", pady = 2, padx = 2)
+        self.config_reglas_atencion = ctk.CTkButton(self.frame_menu_principal, width=180, height=30, text= "Reglas de Atención", command= lambda: self.botones_menu_principal("reglas"))
+        self.config_reglas_atencion.pack(anchor = "n", pady = 2, padx = 2)
         self.config_pantalla = ctk.CTkButton(self.frame_menu_principal, width=180, height=30, text= "Pantalla", command= lambda: self.botones_menu_principal("pantalla"))
         self.config_pantalla.pack(anchor = "n", pady = 2, padx = 2)
         self.config_usuarios = ctk.CTkButton(self.frame_menu_principal, width=180, height=30, text= "Usuarios", command= lambda: self.botones_menu_principal("usuarios"))
@@ -377,6 +398,13 @@ class MiTurnoX(ctk.CTk):
         self.etiqueta_numero_atencion = ctk.CTkLabel(self.frame_config_atenciones, text= "Total atenciones :")
         self.etiqueta_numero_atencion.pack(anchor = "w", padx = 5, pady = 5)
         self.seteo_etiqueta_numero_atencion()
+
+    def menu_config_reglas(self):
+        self.var_reglas = StringVar(value= 'Reglas')
+        self.frame_config_reglas = ctk.CTkFrame(self.frame_submenu_opciones, height= 630, width= 780)
+        self.lista_reglas = ctk.CTkOptionMenu(self.frame_config_reglas, variable= self.var_reglas)
+        self.lista_reglas.pack(anchor = "nw")
+        
     
     def menu_config_pantalla(self):
         self.info_pantalla = config3()
@@ -425,6 +453,23 @@ class MiTurnoX(ctk.CTk):
 
     def menu_config_usuarios(self):
         self.frame_config_usuarios = ctk.CTkFrame(self.frame_submenu_opciones, height= 630, width= 780)
+        self.lista_admin = ctk.CTkOptionMenu(self.frame_config_usuarios)
+        self.lista_admin.set(value= "Administradores")
+        self.lista_admin.pack(side = "left", anchor = "nw", pady = 2, padx = 2)
+        self.lista_ejecutivos = ctk.CTkOptionMenu(self.frame_config_usuarios)
+        self.lista_ejecutivos.set(value= "Ejecutivos")
+        self.lista_ejecutivos.pack(side = "left", anchor = "nw", pady = 2, padx = 2)
+        self.etiqueta_espaciadora_3 = ctk.CTkLabel(self.frame_config_usuarios, width= 800, height= (1/16), text= "")
+        self.etiqueta_espaciadora_3.pack()
+        self.frame_seleccion_tipo_usuario = ctk.CTkFrame(self.frame_config_usuarios, height = 40, width= 780)
+        self.frame_seleccion_tipo_usuario.pack(expand = 1, fill = "x", anchor = "n", pady = 5, padx = 5)
+        self.boton_nuevo_admin = ctk.CTkButton(self.frame_seleccion_tipo_usuario, width=90, height=30, text= "Administrador")
+        self.boton_nuevo_admin.pack(side = "left", pady = 2, padx = 2)
+        self.boton_nuevo_ejecutivo = ctk.CTkButton(self.frame_seleccion_tipo_usuario, width=90, height=30, text= "Ejecutivo")
+        self.boton_nuevo_ejecutivo.pack(side = "left", pady = 2, padx = 2)
+        self.boton_cancelar_nuevo_user = ctk.CTkButton(self.frame_seleccion_tipo_usuario, width=90, height=30, text= "Cancelar")
+        self.boton_cancelar_nuevo_user.pack(side = "left", pady = 2, padx = 2)
+        self.importar_listado_admin()
 
     def crear_frame_atencion(self, task, num):
         match task:
@@ -482,7 +527,8 @@ class MiTurnoX(ctk.CTk):
                 self.boton_editar.configure(command = lambda: self.editar(""))
                 self.boton_nuevo.configure(command = lambda: self.nuevo(""))
                 self.boton_borrar.configure(command = lambda: self.borrar(""))
-
+    def crear_frame_reglas(self):
+        pass
     def cancel(self, boton):
         match boton:
             case "atenciones":
@@ -561,7 +607,62 @@ class MiTurnoX(ctk.CTk):
         self.listado_atenciones.configure(values = self.listado_atenciones_orden_id)
         self.listado_atenciones.set(value = "Atenciones")
         self.seteo_etiqueta_numero_atencion()
+
+    def importar_listado_admin(self):
+        self.listado_admins_db = []
+        self.listado_temp_orden_admins = []
+        self.listado_admins_orden_id = []
+        conn = None
+        try:
+            params = config()
+            conn = psycopg2.connect(**params)
+            cur = conn.cursor()
+            cur.execute('SELECT id_admin, user_admin FROM admin_table')
+            db_return = cur.fetchall()
+            for id, name in db_return:
+                self.listado_admins_db.append([id, name])
+            cur.close()
+        except (Exception, psycopg2.DatabaseError) as error:
+            CTkMessagebox(title= "Mensaje de sistema :", message = "Error al importar la tabla de administradores.")
+            return
+        finally:
+            if conn is not None:
+                conn.close()
+        self.listado_temp_orden_admins = self.listado_admins_db
+        self.listado_temp_orden_admins.sort()
+        for i in range (0, len(self.listado_temp_orden_admins)):
+            self.listado_admins_orden_id.append(f"{self.listado_temp_orden_admins[i][0]} - {self.listado_temp_orden_admins[i][1]}")
+        self.lista_admin.configure(values = self.listado_admins_orden_id)
+        self.lista_admin.set(value = "Administradores")
+    
+    def importar_lista_reglas(self):
+        self.tipo_reglas = {1:'Simple', 2:'Múltiple', 3:'Rebalse', 4:'Libre'}
+        self.listado_reglas_db = []
+        self.listado_temp_orden_reglas = []
+        self.listado_reglas_orden_id = []
+        conn = None
+        try:
+            params = config()
+            conn = psycopg2.connect(**params)
+            cur = conn.cursor()
+            cur.execute('SELECT * FROM reglas_table')
+            db_return = cur.fetchall()
+            for id, tipo in db_return:
+                self.listado_reglas_db.append([id, self.tipo_reglas[tipo]])
+            cur.close()
+        except (Exception, psycopg2.DatabaseError) as error:
+            CTkMessagebox(title= "Mensaje de sistema :", message = "Error al importar la tabla de reglas.")
+            return
+        finally:
+            if conn is not None:
+                conn.close()
+        self.listado_temp_orden_reglas = self.listado_reglas_db
+        self.listado_temp_orden_reglas.sort()
+        for i in range (0, len(self.listado_temp_orden_reglas)):
+            self.listado_reglas_orden_id.append(f"{self.listado_temp_orden_reglas[i][0]} - {self.listado_temp_orden_reglas[i][1]}")
+        self.lista_reglas.configure(values = self.listado_reglas_orden_id)
         
+
     def filtro_id_atencion(self):
         self.atencion_seleccionada = self.listado_atenciones.get()
         self.secuencia_captura = 0
@@ -592,5 +693,16 @@ App = MiTurnoX()
 App.menu()
 App.submenu()
 App.menu_config_atenciones()
+App.menu_config_reglas()
 App.menu_config_pantalla()
+App.menu_config_usuarios()
 App.mainloop()
+
+"""
+GLOSARIO SIGNIFICADOS
+tipo_regla de la tabla reglas_table
+1 - Simple
+2 - Multiple
+3 - Rebalse
+4 - Libre
+"""
